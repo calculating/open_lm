@@ -62,8 +62,8 @@ class OpenLMForCausalLM(PreTrainedModel):
 
     def forward(
         self,
-        input_ids: torch.LongTensor = None,
         inputs_embeds: Optional[torch.FloatTensor] = None,
+        input_ids: Optional[torch.LongTensor] = None,
         attention_mask: Optional[torch.Tensor] = None,
         attention_bias: Optional[torch.Tensor] = None,
         past_key_values: Optional[List[torch.FloatTensor]] = None,
@@ -76,8 +76,8 @@ class OpenLMForCausalLM(PreTrainedModel):
             Cache
         ] = None,  # This is a hack mitigation of an issue in transformers `4.39.x` https://github.com/huggingface/transformers/issues/29426
     ) -> Union[Tuple, CausalLMOutputWithPast]:
-        if inputs_embeds is not None:
-            log.warning("inputs_embeds is set but OpenLM does not support it yet")
+        # if inputs_embeds is not None:
+        #     log.warning("inputs_embeds is set but OpenLM does not support it yet")
         if attention_bias is not None:
             log.warning("attention_bias is et but OpenLM does not support it yet")
         if use_cache is None:
@@ -93,10 +93,12 @@ class OpenLMForCausalLM(PreTrainedModel):
         #     print(len(past_key_values), type(past_key_values[0]))
         outputs = self.model.forward(
             input_ids=input_ids,
+            inputs_embeds=inputs_embeds,
             attention_mask=attention_mask,
             past_key_values=past_key_values,
             use_cache=use_cache,
         )
+        return outputs
 
         logits = outputs[0]
         past_key_values = outputs[2]
