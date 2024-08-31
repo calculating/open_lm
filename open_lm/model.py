@@ -410,6 +410,7 @@ class Transformer(nn.Module, PyTorchModelHubMixin):
         if past_key_values[0] is None:
             past_key_values = None
         x = self.norm(x)
+        return x
         output = self.output(x)
         # follow llama in casting this to float.
         return output.float(), x, past_key_values
